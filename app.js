@@ -1,6 +1,8 @@
-import { scrape as popMusicScrape } from "./scrappers/pop-music.js";
-import { scrape as sonicBoomScrape } from "./scrappers/sonic-boom.js";
+import puppeteer from "puppeteer";
+import { scrape as popMusicScrape } from "./scrapers/pop-music.js";
+import { scrape as sonicBoomScrape } from "./scrapers/sonic-boom.js";
 
 const query = "Bjork vespertine";
 
-popMusicScrape(query).then(res => console.log(res));
+const browser = await puppeteer.launch({ headless: false });
+popMusicScrape(browser, query).then(res => console.log(res));

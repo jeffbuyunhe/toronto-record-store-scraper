@@ -1,8 +1,6 @@
-import puppeteer from 'puppeteer';
 import { POP_MUSIC } from '../constants.js';
 
-export async function scrape(query) {
-    const browser = await puppeteer.launch();
+export async function scrape(browser, query) {
     const page = await browser.newPage();
     await page.goto(`${POP_MUSIC}${encodeURIComponent(query)}`);
 
@@ -16,6 +14,7 @@ export async function scrape(query) {
             const price = await page.$eval(".price", e => e.textContent);
             const availability = await page.$eval(".availability span", e => e.textContent);
 
+            await page.close();
             return {
                 title: title.trim(),
                 img: img,
@@ -24,10 +23,12 @@ export async function scrape(query) {
             }
         }
         catch (e) {
+            await page.close();
             return { error: "Could not get product details" };
         }
     }
     catch (e) {
+        await page.close();
         return { error: "No products found" };
     }
 };
